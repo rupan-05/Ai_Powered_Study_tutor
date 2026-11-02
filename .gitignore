@@ -1,7 +1,9 @@
-venv/
-__pycache__/
-ai_cache/
-*.pyc
 .env
-.vscode/
+venv/
+Scripts/
+Lib/
+Include/
+__pycache__/
+*.pyc
 *.crdownload
+ai_cache/

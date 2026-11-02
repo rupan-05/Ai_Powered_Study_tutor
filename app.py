@@ -1,13 +1,25 @@
 from flask import Flask, render_template, request, send_file, abort, url_for, redirect, flash
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load secrets from the project's .env file (never commit that file).
+load_dotenv()
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from model import predict_assessment_scores
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here' # Change this in production
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise RuntimeError(
+        "SECRET_KEY is missing. Create a .env file in the project folder "
+        "and set SECRET_KEY to a long, random value."
+    )
+
+app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///learning_platform.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -65,11 +77,11 @@ import markdown
 import json
 import re
 
-# Configure Hugging Face Inference API
-# Put your free Hugging Face API token here (starts with hf_...)
-HF_API_TOKEN = "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"
-API_URL = "https://router.huggingface.co/v1/chat/completions" # Using new stable router
-headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+# Configure Hugging Face Inference API.
+# Store the token in .env as HF_TOKEN=...; never hardcode it here.
+HF_API_TOKEN = os.getenv("HF_TOKEN")
+API_URL = "https://router.huggingface.co/v1/chat/completions"
+headers = {"Authorization": f"Bearer {HF_API_TOKEN}"} if HF_API_TOKEN else {}
 
 # Setup simple file-based cache
 CACHE_DIR = os.path.join(BASE_DIR, 'ai_cache')

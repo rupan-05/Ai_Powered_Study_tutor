@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Login - AI Tutor{% endblock %}
+
+{% block content %}
+    <style>
+        .auth-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: calc(100vh - 56px - 72px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        .btn-primary {
+            background-color: #4facfe !important;
+            border: none;
+            border-radius: 10px;
+        }
+        .btn-primary:hover {
+            background-color: #00f2fe !important;
+        }
+    </style>
+    <div class="auth-container">
+        <div class="login-card">
+            <h2 class="text-center mb-4 fw-bold text-primary">Welcome Back</h2>
+            <form method="POST" autocomplete="off">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required autocomplete="off">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required autocomplete="new-password">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">Login</button>
+                <p class="text-center mt-4 mb-0">
+                    Don't have an account? <a href="{{ url_for('register') }}" class="text-primary text-decoration-none fw-bold">Register here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

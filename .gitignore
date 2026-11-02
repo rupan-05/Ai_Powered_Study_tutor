@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+ai_cache/
+*.pyc
+.env
+.vscode/
+*.crdownload

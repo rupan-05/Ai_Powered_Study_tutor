@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}AI Tutor - Assessment Form{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Student Assessment Form</h2>
+        <form method="POST" action="{{ url_for('assessment_form') }}" class="p-4 shadow rounded bg-light">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" min="5" max="18" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select class="form-select" id="gender" name="gender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="grade" class="form-label">Class/Grade (1-10)</label>
+                    <input type="number" class="form-control" id="grade" name="grade" min="1" max="10" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="parent_occupation" class="form-label">Parent Occupation</label>
+                    <select class="form-select" id="parent_occupation" name="parent_occupation" required>
+                        <option value="Clerk">Clerk</option>
+                        <option value="Business">Business</option>
+                        <option value="Artist">Artist</option>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Engineer">Engineer</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="study_time" class="form-label">Study Time (hrs/week)</label>
+                    <input type="number" class="form-control" id="study_time" name="study_time" min="0" max="50" step="0.5" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="math_score" class="form-label">Math Score (0-100)</label>
+                    <input type="number" class="form-control" id="math_score" name="math_score" min="0" max="100" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="science_score" class="form-label">Science Score (0-100)</label>
+                    <input type="number" class="form-control" id="science_score" name="science_score" min="0" max="100" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="english_score" class="form-label">English Score (0-100)</label>
+                    <input type="number" class="form-control" id="english_score" name="english_score" min="0" max="100" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="social_score" class="form-label">Social Score (0-100)</label>
+                    <input type="number" class="form-control" id="social_score" name="social_score" min="0" max="100" required>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Get Assessment Scores</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

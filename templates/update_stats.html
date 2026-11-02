@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Update Proficiency - AI Tutor{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <div class="display-6 fw-bold text-primary mb-2">Update Your Stats</div>
+                        <p class="text-muted">Adjust your proficiency levels to get tailored study notes.</p>
+                    </div>
+
+                    <form method="POST">
+                        <div class="row g-4">
+                            <!-- Parent Occupation -->
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-bold">Parent Occupation</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fas fa-briefcase text-secondary"></i></span>
+                                    <select name="parent_occupation" class="form-select" required>
+                                        {% for occ in ["Clerk", "Business", "Artist", "Doctor", "Teacher", "Engineer"] %}
+                                        <option value="{{ occ }}" {% if current_user.parent_occupation == occ %}selected{% endif %}>{{ occ }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Study Time -->
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-bold">Daily Study Time (Hours)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fas fa-clock text-primary"></i></span>
+                                    <input type="number" step="0.5" name="study_time" class="form-control" 
+                                           value="{{ latest.study_time if latest else 2.0 }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Subject Scores -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Mathematics Score</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fas fa-calculator text-danger"></i></span>
+                                    <input type="number" min="0" max="100" name="math_score" class="form-control" 
+                                           value="{{ (latest.raw_math_score if latest.raw_math_score is not none else latest.math_score)|round(0)|int if latest else 50 }}" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Science Score</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fas fa-flask text-success"></i></span>
+                                    <input type="number" min="0" max="100" name="science_score" class="form-control" 
+                                           value="{{ (latest.raw_science_score if latest.raw_science_score is not none else latest.science_score)|round(0)|int if latest else 50 }}" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">English Score</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fas fa-book text-info"></i></span>
+                                    <input type="number" min="0" max="100" name="english_score" class="form-control" 
+                                           value="{{ (latest.raw_english_score if latest.raw_english_score is not none else latest.english_score)|round(0)|int if latest else 50 }}" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Social Studies Score</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fas fa-globe text-warning"></i></span>
+                                    <input type="number" min="0" max="100" name="social_score" class="form-control" 
+                                           value="{{ (latest.raw_social_score if latest.raw_social_score is not none else latest.social_score)|round(0)|int if latest else 50 }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5">
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">
+                                Save & Update Dashboard
+                            </button>
+                            <a href="{{ url_for('index') }}" class="btn btn-link w-100 text-muted mt-2 text-decoration-none">Back to Dashboard</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

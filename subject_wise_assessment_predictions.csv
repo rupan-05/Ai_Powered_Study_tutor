@@ -1,0 +1,9 @@
+Age,Grade,IQ Level,Parent Occupation,Study Time (hrs/week),Math Score,Science Score,English Score,Social Score,Predicted Math Assessment Score,Math Level,Predicted Science Assessment Score,Science Level,Predicted English Assessment Score,English Level,Predicted Social Assessment Score,Social Level,Overall Level
+15,9,99,5,12,54,40,31,55,78.00898,Intermediate,59.69849,Beginner,45.395237,Beginner,86.662384,Advanced,Beginner
+11,6,94,4,6,64,63,77,54,97.33274,Advanced,102.298004,Advanced,114.12771,Advanced,84.03151,Advanced,Advanced
+12,7,113,5,8,37,31,30,32,57.01578,Beginner,48.352795,Beginner,38.15391,Needs Improvement,59.642475,Beginner,Beginner
+14,9,121,6,13,33,30,50,33,48.524353,Beginner,48.040577,Beginner,70.94543,Intermediate,54.00091,Beginner,Beginner
+12,7,92,4,18,90,69,86,89,137.80647,Advanced,106.489105,Advanced,120.763145,Advanced,115.736725,Advanced,Advanced
+11,5,110,1,7,96,93,87,82,132.33493,Advanced,137.33032,Advanced,120.78629,Advanced,124.29854,Advanced,Advanced
+15,10,93,0,4,46,49,40,54,63.718025,Intermediate,73.8516,Intermediate,59.86256,Beginner,87.489395,Advanced,Intermediate
+12,6,94,3,15,100,86,82,76,137.80647,Advanced,126.58861,Advanced,120.82545,Advanced,110.37962,Advanced,Advanced

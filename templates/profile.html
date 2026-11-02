@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - AI Tutor{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar / User Info -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="bg-primary py-5 text-center text-white">
+                    <i class="fas fa-user-circle fa-5x mb-3"></i>
+                    <h3 class="fw-bold mb-0">{{ current_user.username }}'s Profile</h3>
+                    <p class="opacity-75">Student Dashboard</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                        <span class="text-muted">Total Assessments</span>
+                        <span class="fw-bold">{{ history|length }}</span>
+                    </div>
+                    {% if history %}
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                        <span class="text-muted">Last Active</span>
+                        <span class="fw-bold small">{{ history[0].record.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                    <div class="mt-4">
+                        <h6 class="fw-bold text-uppercase small text-muted mb-3">Latest Average Performance</h6>
+                        {% set latest = history[0].record %}
+                        {% set latest_avg = (latest.math_score + latest.science_score + latest.english_score + latest.social_score) / 4 %}
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ latest_avg }}%" aria-valuenow="{{ latest_avg }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="text-center mt-2 fw-bold text-success">{{ latest_avg|round(1) }}%</p>
+                    </div>
+                    {% endif %}
+                    <div class="d-grid mt-4">
+                        <a href="{{ url_for('assessment_form') }}" class="btn btn-outline-primary rounded-pill">Take New Assessment</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Table -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-history me-2 text-primary"></i>Assessment History</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Date</th>
+                                    <th>Math</th>
+                                    <th>Science</th>
+                                    <th>English</th>
+                                    <th>Social</th>
+                                    <th>Study Time</th>
+                                    <th class="text-center pe-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in history %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold small text-dark">{{ item.record.timestamp.strftime('%d %b, %Y') }}</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">{{ item.record.timestamp.strftime('%H:%M') }}</div>
+                                    </td>
+                                    <td><span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ item.record.math_score|round(1) }}</span></td>
+                                    <td><span class="badge bg-success-subtle text-success border border-success-subtle">{{ item.record.science_score|round(1) }}</span></td>
+                                    <td><span class="badge bg-info-subtle text-info border border-info-subtle">{{ item.record.english_score|round(1) }}</span></td>
+                                    <td><span class="badge bg-warning-subtle text-warning border border-warning-subtle">{{ item.record.social_score|round(1) }}</span></td>
+                                    <td class="small">{{ item.record.study_time }} hrs</td>
+                                    <td class="text-center pe-4">
+                                        {% if item.trend == 'Up' %}
+                                            <span class="badge bg-success"><i class="fas fa-caret-up me-1"></i>Higher</span>
+                                        {% elif item.trend == 'Down' %}
+                                            <span class="badge bg-danger"><i class="fas fa-caret-down me-1"></i>Lower</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Stable</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% if not history %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="fas fa-folder-open fa-3x mb-3 d-block"></i>
+                                        No assessments found. Start learning to see your history!
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .badge {
+        font-weight: 600;
+        min-width: 40px;
+    }
+    .table thead th {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        border-top: none;
+    }
+    .card {
+        transition: transform 0.2s ease;
+    }
+    .bg-primary-subtle { background-color: #e3f2fd !important; }
+    .bg-success-subtle { background-color: #e8f5e9 !important; }
+    .bg-info-subtle { background-color: #e0f7fa !important; }
+    .bg-warning-subtle { background-color: #fff8e1 !important; }
+</style>
+{% endblock %}

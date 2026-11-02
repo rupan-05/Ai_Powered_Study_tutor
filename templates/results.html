@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}AI Tutor - Assessment Results{% endblock %}
+
+{% block extra_head %}
+    <!-- MathJax for LaTeX Rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <!-- Display the student's name dynamically -->
+        <h2 class="text-center mb-4">Assessment Results for {{ student.name }}</h2>
+
+        <!-- 1. Recommended Subject (Top Level) -->
+        {% if active_subject and results[active_subject] %}
+        <div class="row mb-5 justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow border-primary border-4 recommended-subject-top">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-3">
+                            <span class="badge bg-primary fs-6 px-4 py-2 rounded-pill shadow-sm">
+                                <i class="fas fa-star me-2"></i> Recommended Resource for your Topic
+                            </span>
+                        </div>
+                        <h2 class="display-5 fw-bold text-primary mb-3">{{ active_subject }}</h2>
+                        <div class="row justify-content-center mb-4">
+                            <div class="col-auto">
+                                <div class="p-3 bg-light rounded-3 border">
+                                    <p class="text-muted small mb-0 font-monospace">ASSESSMENT SCORE</p>
+                                    <h4 class="mb-0 fw-bold">{{ results[active_subject].assessment_score|round(1) }}</h4>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="p-3 bg-light rounded-3 border h-100 d-flex flex-column justify-content-center">
+                                    <p class="text-muted small mb-0 font-monospace">LEARNING LEVEL</p>
+                                    <h4 class="mb-0 fw-bold">
+                                        <span class="badge {% if results[active_subject].level == 'Advanced' %}bg-success{% elif results[active_subject].level == 'Intermediate' %}bg-info{% else %}bg-secondary{% endif %}">
+                                            {{ results[active_subject].level }}
+                                        </span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="/materials/{{ active_subject }}/{{ results[active_subject].level }}/{{ student.grade }}" 
+                               class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow" 
+                               download>
+                                <i class="fas fa-file-download me-2"></i> Download Study Materials
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Default Fallback: Show all subjects equally if no match -->
+        <div class="row">
+            {% for subject, result in results.items() %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-primary">
+                    <div class="card-body text-center p-4">
+                        <h5 class="fw-bold mb-3">{{ subject }}</h5>
+                        <p class="card-text mb-1">Score: {{ result.assessment_score|round(1) }}</p>
+                        <p class="card-text">Level: <span class="badge bg-secondary">{{ result.level }}</span></p>
+                        <a href="/materials/{{ subject }}/{{ result.level }}/{{ student.grade }}" class="btn btn-outline-primary mt-3 w-100" download>📥 Materials</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if overall_level %}
+        <!-- 2. Pedagogical AI Notes Module -->
+        <div class="row mt-4 mb-5">
+            <div class="col-12">
+                {% if topic_notes %}
+                <div class="card shadow-sm border-0 ai-notes-module">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white py-3" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                        <h4 class="mb-0 text-dark fw-bold">
+                            {% if topic_notes.status == 'error' %}
+                                <i class="fas fa-exclamation-circle text-warning me-2"></i> AI Notes Unavailable
+                            {% else %}
+                                <i class="fas fa-graduation-cap text-primary me-2"></i> Learning Module: {{ topic }}
+                            {% endif %}
+                        </h4>
+                        {% if topic_notes.source == 'cache' %}
+                            <div class="ms-3">
+                                <span class="badge rounded-pill bg-light text-success border border-success-subtle px-3 py-2" title="Loaded from local cache">
+                                    <i class="fas fa-bolt me-1"></i> Cached Note
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body pedagogical-content">
+                        {% if topic_notes.status == 'success' %}
+                            <div class="d-flex align-items-center mb-4 flex-wrap gap-2">
+                                <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
+                                    <i class="fas fa-user-graduate me-1"></i> Personalized Level: {{ notes_level }}
+                                </div>
+                                <div class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                    <i class="fas fa-tag me-1"></i> Curated Subject: {{ active_subject or 'General' }}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="notes-content">
+                            {% if topic_notes.status == 'error' %}
+                                {{ topic_notes.content | safe }}
+                                <div class="text-center mt-4">
+                                    <button onclick="window.location.reload();" class="btn btn-outline-primary rounded-pill">
+                                        <i class="fas fa-sync-alt me-2"></i> Retry Generation
+                                    </button>
+                                </div>
+                            {% else %}
+                                {{ topic_notes.content | safe }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card shadow-sm border-0 border-start border-5 border-info text-center p-5 bg-light rounded-4">
+                    <div class="mb-3">
+                        <i class="fas fa-robot fa-3x text-muted opacity-50"></i>
+                    </div>
+                    <h5 class="fw-bold">AI Notes are Processing or Unavailable</h5>
+                    <p class="text-muted mx-auto" style="max-width: 400px;">Refresh the page to retry the AI generation if it timed out.</p>
+                    <button onclick="window.location.reload();" class="btn btn-primary px-4 py-2 rounded-pill">
+                        <i class="fas fa-sync-alt me-2"></i> Retry Now
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 3. Other Assessment Areas (Bottom row) -->
+        {% if active_subject %}
+        <div class="mt-5 border-top pt-4">
+            <h4 class="text-secondary mb-4 text-center"><i class="fas fa-list-ul me-2"></i> Other Assessment Areas</h4>
+            <div class="row justify-content-center">
+                {% for subject, result in results.items() %}
+                {% if subject != active_subject %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100 border-0 bg-light-subtle card-hover-lite">
+                        <div class="card-body text-center p-3 d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title text-muted mb-2">{{ subject }}</h5>
+                                <div class="d-flex justify-content-around mb-2 small">
+                                    <span>Score: <strong>{{ result.assessment_score|round(1) }}</strong></span>
+                                    <span>Level: <span class="badge bg-secondary-subtle text-secondary">{{ result.level }}</span></span>
+                                </div>
+                            </div>
+                            <a href="/materials/{{ subject }}/{{ result.level }}/{{ student.grade }}" 
+                               class="btn btn-sm btn-outline-secondary rounded-pill mt-2" 
+                               download>
+                                <i class="fas fa-download me-1"></i> Study Materials
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <style>
+            .ai-notes-module {
+                border-radius: 16px !important;
+                background-color: #e3f2fd !important;
+                border-left: 10px solid #2196f3 !important;
+                overflow: hidden;
+            }
+            .recommended-subject-top {
+                border-radius: 20px !important;
+                background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            }
+            .card-hover-lite:hover {
+                background-color: #ffffff !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+                transition: all 0.2s ease;
+            }
+            .pedagogical-content {
+                padding: 2.5rem;
+            }
+            .notes-content {
+                line-height: 1.8;
+                color: #2c3e50;
+                font-size: 1.1rem;
+            }
+            .notes-content h1, .notes-content h2, .notes-content h3 {
+                color: #1a237e !important;
+                margin-top: 2.5rem;
+                margin-bottom: 1.25rem;
+                font-weight: 800;
+                border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+                padding-bottom: 0.5rem;
+                text-align: left;
+            }
+            .notes-content strong {
+                color: #0d47a1;
+                font-weight: 700;
+            }
+            .notes-content ul {
+                background: rgba(255,255,255,0.4);
+                padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                text-align: left;
+            }
+            .notes-content li {
+                margin-bottom: 1rem;
+            }
+        </style>
+
+        <!-- Button to go back to the assessment form -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('assessment_form') }}" class="btn btn-secondary">Back to Assessment</a>
+        </div>
+    </div>
+{% endblock %}
